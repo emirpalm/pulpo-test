@@ -1,0 +1,220 @@
+<div class="row animated fadeIn fast">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                
+                <input type="text"
+                        class="form-control"
+                        placeholder="Buscar Auto..."
+                        #txtTermino
+                        (keyup)="searchAutos(txtTermino.value)"/>
+
+            </div>
+        </div>
+    </div>
+</div> 
+
+<div class="row animated fadeIn fast"
+*ngIf="cargando">
+    <div class="col-12">
+        
+        <div class="alert alert-info text-center">
+          <h4 class="alert-heading">Cargando</h4>
+          <i class="fa fa-spin fa-refresh fa-2x"></i>
+          <p class="mb-0">Por favor espere</p>
+        </div>
+
+    </div>
+</div> 
+
+
+<div class="row"
+*ngIf="!cargando">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+              
+
+                <div class="row">
+                    <div class="col-8">
+                        <h4 class="card-title">Autos ({{this.total}})</h4>
+                        <h6 class="card-subtitle">Autos registrados en mi aplicación</h6>
+                    </div>
+                    <div class="col">
+                        <div class="text-right">
+                            <button class="btn btn-primary"
+                            (click)="openModalCreateAuto(modalContent)"
+                                    >
+                                <i class="fa fa-plus"></i>
+                                Crear Auto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Identificacion</th>
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>Color</th>
+                                <th>Fecha Ingreso</th>
+                                <th>Estado</th>
+                                <th>Asignado</th>
+                                <th class="text-nowrap">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let auto of autos">
+                                <td>
+                                    <input type="text"
+                                            class="form-control"
+                                            placeholder="Identificacion..."
+                                            [(ngModel)]="auto.identificacion" />
+                                </td>
+                                <td>
+                                    <select class="form-control"
+                                            [(ngModel)]="auto.marca._id">
+                                    <option *ngFor="let marca of marcas" [ngValue]="marca._id">{{marca.name}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                            class="form-control"
+                                            placeholder="modelo..."
+                                            [(ngModel)]="auto.modelo" />
+                                </td>
+                                <td>
+                                    <select class="form-control"
+                                            [(ngModel)]="auto.color._id">
+                                    <option *ngFor="let color of colores" [ngValue]="color._id">{{color.name}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                            class="form-control"
+                                            placeholder="fecha ingreso..."
+                                            [(ngModel)]="auto.date" [value]="auto.date | date:'dd/MM/yyyy'" [readonly]="true"/>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="auto.estado">
+                                        <label class="form-check-label" for="estado">
+                                        status
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="auto.asignado">
+                                        <label class="form-check-label" for="asignado">
+                                        Asignado
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="text-nowrap text-center">
+                                    <a (click)="updatedAuto(auto)" 
+                                        data-toggle="tooltip" 
+                                        class="cursor"
+                                        data-original-title="Editar"> 
+                                        <i class="fa fa-pencil text-inverse m-r-10"></i> 
+                                    </a>
+                                    <a (click)="deleteAuto(auto)" 
+                                    data-toggle="tooltip" 
+                                    class="cursor"
+                                    data-original-title="Borrar"> 
+                                    <i class="fa fa-close text-danger"></i> </a>
+                                </td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+                <button (click)="changePage(-1)" class="btn btn-secondary">Anteriores</button>
+                &nbsp;
+                <button (click)="changePage(1)" class="btn btn-secondary">Siguientes</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #modalContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Añadir un auto</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="form">
+        <div class="form-group">
+          <label>Identificacion:</label>
+          <input id="identificacion" class="form-control" type="text" formControlName="identificacion" minlength="17" maxlength="17">
+          <p class="alert alert-danger" *ngIf="form.controls['identificacion'].hasError('minlength')">
+            La identificacion no puede ser menor a 17 caracteres.
+        </p>
+        <p class="alert alert-danger" *ngIf="form.controls['identificacion'].hasError('maxlength')">
+            La identificacion no puede ser mayor a 17 caracteres.
+        </p>
+        <p class="alert alert-danger" *ngIf="form.controls['identificacion'].hasError('required') && form.controls['identificacion'].dirty">
+            identificacion es requerida
+        </p>
+        </div>
+        <div class="form-group">
+          <label>Marca:</label>
+          <select id="marca" class="form-control" formControlName="marca">
+            <option value="">Selecciona una marca</option>
+            <option *ngFor="let marca of marcas" [value]="marca._id">{{ marca.name }}</option>
+          </select>
+          <p class="alert alert-danger" *ngIf="form.controls['marca'].hasError('required') && form.controls['marca'].dirty">
+            Marca es requerida
+        </p>
+        </div>
+        <div class="form-group">
+          <label>Modelo:</label>
+          <input id="modelo" class="form-control" type="number" formControlName="modelo">
+          <p class="alert alert-danger" *ngIf="form.controls['modelo'].hasError('required') && form.controls['modelo'].dirty">
+            Marca es requerida
+        </p>
+        </div>
+        <div class="form-group">
+          <label>Color:</label>
+          <select id="color" class="form-control" formControlName="color">
+            <option value="">Selecciona un color</option>
+            <option *ngFor="let color of colores" [value]="color._id">{{ color.name }}</option>
+          </select>
+          <p class="alert alert-danger" *ngIf="form.controls['color'].hasError('required') && form.controls['color'].dirty">
+            Color es requerida
+        </p>
+        </div>
+        <div class="form-group">
+          <label>Fecha Ingreso:</label>
+          <input id="date" class="form-control" type="date" formControlName="date">
+          <p class="alert alert-danger" *ngIf="form.controls['date'].hasError('required') && form.controls['date'].dirty">
+            Fecha de ingreso es requerida
+        </p>
+        </div>
+        <div class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" formControlName="estado" id="estado">
+            <label class="form-check-label" for="estado">Estado</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" formControlName="asignado" id="asignado">
+            <label class="form-check-label" for="asignado">Asignado</label>
+          </div>
+        </div>
+        </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">Cancel</button>
+    <!--<button type="button" class="btn btn-primary" (click)="modal.close('save')">Save</button>-->
+    <button type="button" class="btn btn-primary" (click)="submitForm()">Submit</button>
+  </div>
+</ng-template>

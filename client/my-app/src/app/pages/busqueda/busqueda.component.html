@@ -1,0 +1,108 @@
+<div class="row animated fadeIn fast">
+
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+                <h3>Autos</h3>
+
+                <div class="alert alert-info animated fadeIn fast"
+                    *ngIf="autos.length === 0">
+                  <p class="mb-0">
+                      No hay autos con ese término
+                  </p>
+                </div>
+
+                <div class="table-responsive"
+                    *ngIf="autos.length > 0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let auto of autos"
+                                class="animated fadeIn fast">
+                                <td>{{ auto.identificacion }}</td>
+                                <td>{{ auto.marca }}</td>
+                                <td>{{ auto.modelo }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+                <h3>Marcas</h3>
+
+                <div class="alert alert-info animated fadeIn fast"
+                    *ngIf="marcas.length === 0">
+                  <p class="mb-0">
+                      No hay una marca con ese término
+                  </p>
+                </div>
+
+                <div class="table-responsive"
+                    *ngIf="marcas.length > 0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let marca of marcas"
+                                class="animated fadeIn fast">
+                                <td>{{ marca.name }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-4">
+        <div class="card">
+            <div class="card-body">
+                <h3>Colores</h3>
+
+                <div class="alert alert-info animated fadeIn fast"
+                    *ngIf="colores.length === 0">
+                  <p class="mb-0">
+                      No hay una colores con ese término
+                  </p>
+                </div>
+
+                <div class="table-responsive"
+                    *ngIf="colores.length > 0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let color of colores"
+                                class="animated fadeIn fast">
+                                <td>{{ color.name }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</div> 
